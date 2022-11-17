@@ -52,4 +52,10 @@ extension StringExtension on String {
 
     return '$day/$month/$year - $hour:$minute';
   }
+
+  DateTime get toDateTime => _toDateTime(this);
+  DateTime _toDateTime(String value) {
+    final parsed = value.replaceAll('T', ' ');
+    return intl.DateFormat('yyyy-MM-dd HH:mm:ss').parse(parsed);
+  }
 }

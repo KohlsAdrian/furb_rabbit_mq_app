@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:furb_rabbit_mq_app/core/mqtt.dart';
 import 'package:furb_rabbit_mq_app/core/notifier/notification_notifier.dart';
 import 'package:furb_rabbit_mq_app/core/rest/rest.dart';
 import 'package:furb_rabbit_mq_app/features/home/home.dart';
@@ -14,6 +15,7 @@ abstract class LoginViewModel extends State<Login> {
     final password = passwordController.text;
     Rest.instance.login(email, password).then((value) {
       if (value) {
+        run(email);
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: ((context) => const Home())));
       } else {

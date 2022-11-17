@@ -2,6 +2,7 @@ import 'dart:convert' as convert;
 
 import 'package:furb_rabbit_mq_app/core/constants.dart';
 import 'package:furb_rabbit_mq_app/core/extensions/string_extension.dart';
+import 'package:furb_rabbit_mq_app/core/models/message_model.dart';
 import 'package:furb_rabbit_mq_app/core/models/person_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -86,5 +87,22 @@ class Rest {
       return PersonModel.fromJson(body);
     }
     return null;
+  }
+
+  Future<List<MessageModel>> getMessages() async {
+    List<MessageModel> messages = [];
+
+    final response = await http.get(
+      Uri.parse('$_host/messages'),
+      headers: {
+        if (_token != null) 'Authorization': _token!,
+      },
+    );
+    if (response.statusCode == 200) {
+      final body = convert.json.decode(response.body);
+      return (body as List).map((e) => MessageModel.fromJson(e)).toList();
+    }
+
+    return messages;
   }
 }
