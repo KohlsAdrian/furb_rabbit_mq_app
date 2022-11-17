@@ -3,14 +3,34 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:furb_rabbit_mq_app/core/extensions/string_extension.dart';
 import 'package:furb_rabbit_mq_app/core/notifier/notification_notifier.dart';
+import 'package:furb_rabbit_mq_app/core/rest/rest.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:typed_data/typed_buffers.dart';
 
 import 'constants.dart';
 
 final client = MqttServerClient(host, '');
 int pongCount = 0;
+
+void resubscribe() async {
+  Rest.instance.getTopics().then((value) {
+    if (value.isNotEmpty) {
+      for (final topic in value) {
+        unsubscribe(topic.name);
+      }
+    }
+    Rest.instance.getMyTopics().then((value) {
+      if (value.isNotEmpty) {
+        for (final topic in value) {
+          subscribe(topic.name);
+        }
+      }
+    });
+  });
+}
 
 Future<void> run(String identifier) async {
   /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
@@ -120,7 +140,8 @@ Future<void> run(String identifier) async {
 
         callNotificationNotifier(
           '${topic?.toUpperCase()} - $message\n'
-          '${dateTimeStringFormatted(dateStart)} - ${dateTimeStringFormatted(dateEnd)}',
+          '${dateStart.toString().dateTimeStringFormatted} - '
+          '${dateEnd.toString().dateTimeStringFormatted}',
         );
       } catch (e) {
         debugPrint(e.toString());
@@ -143,7 +164,7 @@ Future<void> disconnect() async {
   client.disconnect();
 }
 
-void usubscribe(String topic) {
+void unsubscribe(String topic) {
   /// Finally, unsubscribe and exit gracefully
 
   client.unsubscribe(topic);
@@ -153,16 +174,13 @@ void subscribe(String topic) {
   /// Lets publish to our topic
   /// Use the payload builder rather than a raw buffer
   /// Our known topic to publish to
-  final pubTopic = topic;
-  final builder = MqttClientPayloadBuilder();
-
   /// Subscribe to it
 
-  client.subscribe(pubTopic, MqttQos.exactlyOnce);
+  client.subscribe(topic, MqttQos.exactlyOnce);
 
   /// Publish it
 
-  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
+  client.publishMessage(topic, MqttQos.exactlyOnce, Uint8Buffer());
 }
 
 /// The subscribed callback

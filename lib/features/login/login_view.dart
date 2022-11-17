@@ -8,28 +8,28 @@ class LoginView extends LoginViewModel {
   Widget build(BuildContext context) {
     return BaseWidget(
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextFormField(
               controller: emailController,
-              decoration: InputDecoration(hintText: 'Email'),
+              decoration: const InputDecoration(hintText: 'Email'),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextFormField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(hintText: 'Senha'),
+              decoration: const InputDecoration(hintText: 'Senha'),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: onLogin,
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
             TextButton(
               onPressed: onCreate,
-              child: Text('Criar conta'),
+              child: const Text('Criar conta'),
             ),
           ],
         ),
