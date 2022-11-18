@@ -23,75 +23,88 @@ class HomeView extends HomeViewModel {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 100,
-              child: _topics(),
-            ),
             Expanded(
-              child: ValueListenableBuilder<DateTime>(
-                valueListenable: selectedDateTime,
-                builder: (_, dateTime, __) =>
-                    ValueListenableBuilder<List<MessageModel>>(
-                  valueListenable: selectedMessageDateTime,
-                  builder: (_, messages, __) => Column(
-                    children: [
-                      TableCalendar(
-                        currentDay: dateTime,
-                        focusedDay: dateTime,
-                        firstDay: DateTime.now()
-                            .subtract(const Duration(days: 365 * 10)),
-                        lastDay:
-                            DateTime.now().add(const Duration(days: 365 * 3)),
-                        eventLoader: eventLoader,
-                        onDaySelected: onDaySelected,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
                       ),
-                      _events(messages),
-                    ],
-                  ),
+                      child: _topics(),
+                    ),
+                    _calendar(),
+                  ],
                 ),
               ),
             ),
+            _events(),
           ],
         ),
       ),
     );
   }
 
-  Widget _events(List<MessageModel> messages) => Visibility(
-        visible: messages.isNotEmpty,
-        child: Column(
-          children: messages
-              .map(
-                (e) => Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: e.type == MqttTopics.event
-                        ? Colors.amber
-                        : e.type == MqttTopics.test
-                            ? Colors.red
-                            : Colors.indigo,
-                  ),
-                  child: Text(
-                    '${e.message}\n'
-                    'Início: ${e.startDate?.toFormatedString}\n'
-                    'Fim: ${e.endDate?.toFormatedString}',
-                    style: const TextStyle(
-                      color: Colors.white,
+  Widget _calendar() => ValueListenableBuilder<DateTime>(
+        valueListenable: selectedDateTime,
+        builder: (_, dateTime, __) => TableCalendar(
+          currentDay: dateTime,
+          focusedDay: dateTime,
+          firstDay: DateTime.now().subtract(const Duration(days: 365 * 10)),
+          lastDay: DateTime.now().add(const Duration(days: 365 * 3)),
+          eventLoader: eventLoader,
+          onDaySelected: onDaySelected,
+        ),
+      );
+
+  Widget _events() => ValueListenableBuilder<List<MessageModel>>(
+        valueListenable: selectedMessageDateTime,
+        builder: (_, messages, __) => Visibility(
+          visible: messages.isNotEmpty,
+          child: Column(
+            children: messages
+                .map(
+                  (e) => Container(
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: e.type == MqttTopics.event
+                          ? Colors.amber
+                          : e.type == MqttTopics.test
+                              ? Colors.red
+                              : Colors.indigo,
+                    ),
+                    child: Text(
+                      '${e.message}\n'
+                      'Início: ${e.startDate?.toFormatedString}\n'
+                      'Fim: ${e.endDate?.toFormatedString}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+          ),
         ),
       );
 
   Widget _topics() => ValueListenableBuilder<List<MqttTopics>>(
         valueListenable: topics,
-        builder: (_, topics, __) => Column(
+        builder: (_, topics, __) => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: topics
               .map(
                 (topic) => ValueListenableBuilder<Map<MqttTopics, bool>>(
@@ -104,7 +117,10 @@ class HomeView extends HomeViewModel {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(topic.name),
+                        Text(
+                          topic.name,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         Checkbox(
                           value: checked[topic],
                           onChanged: (value) => onChangedTopic(value, topic),
