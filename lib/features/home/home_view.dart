@@ -14,6 +14,19 @@ class HomeView extends HomeViewModel {
     return BaseWidget(
       onRefresh: initialize,
       appBar: AppBar(
+        actions: [
+          ValueListenableBuilder<PersonModel?>(
+            valueListenable: person,
+            builder: (_, value, __) => Visibility(
+              visible: person.value?.personType == PersonType.headship ||
+                  person.value?.personType == PersonType.teacher,
+              child: IconButton(
+                onPressed: onCreateMessage,
+                icon: const Icon(Icons.create),
+              ),
+            ),
+          ),
+        ],
         title: ValueListenableBuilder<PersonModel?>(
           valueListenable: person,
           builder: (_, value, __) => Text(

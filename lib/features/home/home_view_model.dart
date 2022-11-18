@@ -4,6 +4,7 @@ import 'package:furb_rabbit_mq_app/core/models/message_model.dart';
 import 'package:furb_rabbit_mq_app/core/models/person_model.dart';
 import 'package:furb_rabbit_mq_app/core/mqtt.dart';
 import 'package:furb_rabbit_mq_app/core/rest/rest.dart';
+import 'package:furb_rabbit_mq_app/features/create_message/create_message.dart';
 
 import './home.dart';
 
@@ -57,6 +58,11 @@ abstract class HomeViewModel extends State<Home> {
       },
     );
     await getMessages();
+  }
+
+  void onCreateMessage() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const CreateMessage()));
   }
 
   Future<void> getMessages() async {
