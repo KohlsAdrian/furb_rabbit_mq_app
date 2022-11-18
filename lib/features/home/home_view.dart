@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:furb_rabbit_mq_app/core/components/base_widget.dart';
 import 'package:furb_rabbit_mq_app/core/constants.dart';
+import 'package:furb_rabbit_mq_app/core/extensions/date_time_extension.dart';
 import 'package:furb_rabbit_mq_app/core/models/message_model.dart';
 import 'package:furb_rabbit_mq_app/core/models/person_model.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -68,10 +69,16 @@ class HomeView extends HomeViewModel {
                   margin: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.indigo,
+                    color: e.type == MqttTopics.event
+                        ? Colors.amber
+                        : e.type == MqttTopics.test
+                            ? Colors.red
+                            : Colors.indigo,
                   ),
                   child: Text(
-                    '${e.type.toString()} | ${e.message}',
+                    '${e.message}\n'
+                    'Início: ${e.startDate?.toFormatedString}\n'
+                    'Fim: ${e.endDate?.toFormatedString}',
                     style: const TextStyle(
                       color: Colors.white,
                     ),

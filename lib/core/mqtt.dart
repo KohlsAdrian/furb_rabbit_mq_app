@@ -50,10 +50,10 @@ Future<void> run(String identifier) async {
   client.setProtocolV311();
 
   /// If you intend to use a keep alive you must set it here otherwise keep alive will be disabled.
-  client.keepAlivePeriod = 20;
+  client.keepAlivePeriod = 9999;
 
   /// The connection timeout period can be set if needed, the default is 5 seconds.
-  client.connectTimeoutPeriod = 2000; // milliseconds
+  client.connectTimeoutPeriod = 5; // milliseconds
 
   /// Add the unsolicited disconnection callback
   client.onDisconnected = onDisconnected;
@@ -144,7 +144,7 @@ Future<void> run(String identifier) async {
           '${dateEnd.toString().dateTimeStringFormatted}',
         );
       } catch (e) {
-        debugPrint(e.toString());
+        callNotificationNotifier(data);
       }
     }
   });

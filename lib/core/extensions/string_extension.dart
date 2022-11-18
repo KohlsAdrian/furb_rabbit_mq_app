@@ -43,7 +43,7 @@ extension StringExtension on String {
   String get dateTimeStringFormatted => _dateTimeStringFormatted(this);
   String _dateTimeStringFormatted(String dateTimeString) {
     final parsed = dateTimeString.replaceAll('T', ' ').split('.').first;
-    final dateTime = intl.DateFormat().parse(parsed);
+    final dateTime = intl.DateFormat('yyyy-MM-dd HH:mm:ss').parse(parsed);
     final day = dateTime.day;
     final month = dateTime.month;
     final year = dateTime.year;

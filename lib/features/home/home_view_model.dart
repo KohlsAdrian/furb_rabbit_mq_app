@@ -66,13 +66,38 @@ abstract class HomeViewModel extends State<Home> {
       for (final message in messages.value) {
         final createdAt = message.createdAt;
         if (createdAt != null) {
-          final year = createdAt.year;
-          final month = createdAt.month;
-          final day = createdAt.day;
-          messagesDateTime[year] ??= {};
-          messagesDateTime[year]![month] ??= {};
-          messagesDateTime[year]![month]![day] ??= [];
-          messagesDateTime[year]![month]![day]!.add(message);
+          final startDate = message.startDate!;
+          final endDate = message.endDate!;
+
+          final diffDays = endDate.difference(startDate).inDays;
+          if (diffDays <= 0) {
+            final year = startDate.year;
+            final month = startDate.month;
+            final day = startDate.day;
+            messagesDateTime[year] ??= {};
+            messagesDateTime[year]![month] ??= {};
+            messagesDateTime[year]![month]![day] ??= [];
+            messagesDateTime[year]![month]![day]!.add(message);
+          } else {
+            final start = DateTime(
+              startDate.year,
+              startDate.month,
+              startDate.day,
+              startDate.hour,
+              startDate.minute,
+              startDate.second,
+            );
+            for (int i = 0; i < diffDays; i++) {
+              final year = start.year;
+              final month = start.month;
+              final day = start.day;
+              messagesDateTime[year] ??= {};
+              messagesDateTime[year]![month] ??= {};
+              messagesDateTime[year]![month]![day] ??= [];
+              messagesDateTime[year]![month]![day]!.add(message);
+              start.add(const Duration(days: 1));
+            }
+          }
         }
       }
       setState(() {});
