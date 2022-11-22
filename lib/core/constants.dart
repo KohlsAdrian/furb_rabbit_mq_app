@@ -1,6 +1,6 @@
-const host = 'jackal.rmq.cloudamqp.com';
-const username = 'lnixlvfr:lnixlvfr';
-const password = 'eRX8pkRaL99ai9FmgIlKLcjP_hjyb_Vw';
+const host = 'localhost';
+const username = 'guest';
+const password = 'guest';
 
 enum MqttTopics { event, test, rest }
 
