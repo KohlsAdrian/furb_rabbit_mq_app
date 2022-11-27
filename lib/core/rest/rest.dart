@@ -100,9 +100,30 @@ class Rest {
     );
     if (response.statusCode == 200) {
       final body = convert.json.decode(response.body);
-      return (body as List).map((e) => MessageModel.fromJson(e)).toList();
+      messages = (body as List).map((e) => MessageModel.fromJson(e)).toList();
     }
 
     return messages;
+  }
+
+  Future<bool> createMessage({
+    required String message,
+    required MqttTopics topic,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$_host/message'),
+      body: convert.json.encode({
+        'message': message,
+        'type': topic.name,
+        'date_start': startDate.toIso8601String(),
+        'date_end': startDate.toIso8601String(),
+      }),
+      headers: {
+        if (_token != null) 'Authorization': _token!,
+      },
+    );
+    return response.statusCode <= 400;
   }
 }
